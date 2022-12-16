@@ -8,7 +8,7 @@ export async function setPath(dirname, path) {
         return join(dirname, '..');
     }
     if(way === '.') {
-        console.log('Invalid input');
+        console.log('Invalid input\n');
         return dirname
     }
     try {
@@ -17,7 +17,7 @@ export async function setPath(dirname, path) {
 
         return distPath
     } catch (error) {
-        console.log('Operation failed');
+        console.log('Operation failed: Written wrong Directory\n');
         return dirname
     }
 }

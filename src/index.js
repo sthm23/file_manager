@@ -4,8 +4,9 @@ import { stdin as input, stdout as output } from 'node:process';
 import {getUserName} from './controllers/cli/welcoming.js'
 import{setPath} from './controllers/path/pathUp.js'
 import {homedir} from 'node:os';
-import {readDir} from './controllers/path/readDir.js';
 import {checkCpus, checkEOL, checkArch, checkHomeDir, checkUserName} from './controllers/os/checkOsTasks.js';
+import {readDir} from './controllers/path/readDir.js';
+import {calculateHash} from './controllers/hash/calchash.js';
 
 
 let __dirname = homedir();
@@ -27,8 +28,7 @@ rl.on('line', async (input)=>{
         __dirname = await setPath(__dirname, input)
 
     }else if(input === 'ls'){
-        const files = await readDir(__dirname);
-        console.table(files);
+        await readDir(__dirname);
     } else if(input.length>4 && input.startsWith('cat ')){
     
     }else if(input.length>4 && input.startsWith('add ')){
@@ -51,16 +51,16 @@ rl.on('line', async (input)=>{
         checkUserName();
     }else if(input.length>3 && input === 'os --architecture'){
         checkArch();
-    }else if(input.length>5 && input === 'hash '){
+    }else if(input.length>5 && input.startsWith('hash ')){
+        await calculateHash(__dirname, input);
+    }else if(input.length>9 && input.startsWith('compress ')){
     
-    }else if(input.length>9 && input === 'compress '){
-    
-    }else if(input.length>11 && input === 'decompress '){
+    }else if(input.length>11 && input.startsWith('decompress ')){
     
     }else if(input === 'help'){
     
     }else{
-        console.log('Invalid input');
+        console.log('Invalid input\n');
     }
 
     console.log(`You are currently in ${__dirname}`);
