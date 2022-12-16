@@ -7,12 +7,11 @@ import {homedir} from 'node:os';
 import {checkCpus, checkEOL, checkArch, checkHomeDir, checkUserName} from './controllers/os/checkOsTasks.js';
 import {readDir} from './controllers/path/readDir.js';
 import {calculateHash} from './controllers/hash/calchash.js';
-
+import {createFile} from './controllers/fs/createFile.js';
+import {readFile} from './controllers/fs/readFile.js';
+import {deleteFile} from './controllers/fs/deleteFile.js';
 
 let __dirname = homedir();
-
-
-
 const rl = readline.createInterface({ input, output });
 const arg = argv.slice(2);
 
@@ -30,17 +29,17 @@ rl.on('line', async (input)=>{
     }else if(input === 'ls'){
         await readDir(__dirname);
     } else if(input.length>4 && input.startsWith('cat ')){
-    
+        readFile(__dirname, input);
     }else if(input.length>4 && input.startsWith('add ')){
-    
+        createFile(__dirname, input);
     }else if(input.length>3 && input.startsWith('rn ')){
-    
+        
     }else if(input.length>3 && input.startsWith('cp ')){
     
     }else if(input.length>3 && input.startsWith('mv ')){
     
     }else if(input.length>3 && input.startsWith('rm ')){
-    
+        await deleteFile(__dirname, input);
     }else if(input.length>3 && input === 'os --cpus'){
         checkCpus();
     }else if(input.length>3 && input === 'os --EOL'){
