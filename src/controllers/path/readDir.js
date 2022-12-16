@@ -4,7 +4,14 @@ export async function readDir(path) {
     try {
         const files = await readdir(path, {withFileTypes: true});
         // console.log(files);
-        return files.map(item=> [item.name, !item.isFile() ? 'directory' : 'file']).sort(compare);
+        return files.map(item=> {
+            return {
+                name: item.name, 
+                type: !item.isFile() ? 'directory' : 'file'
+            }
+        })
+          .sort(compare)
+            .sort((a, b)=> a.name-b.name);
       } catch (err) {
         //   console.error(err);
           return []
@@ -12,7 +19,7 @@ export async function readDir(path) {
 }
 
 function compare(a, b) {
-    if(a[1] === 'directory' && b[1] === 'file') {
+    if(a.type === 'directory' && b.type === 'file') {
         return -1
     } else {
         return 1
