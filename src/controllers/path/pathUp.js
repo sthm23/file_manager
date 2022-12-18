@@ -11,9 +11,15 @@ export async function setPath(dirname, path) {
         console.log('Invalid input\n');
         return dirname
     }
+
     try {
+        if(way[1] === ':') {
+            const newWay = join(way, '/')
+            await readdir(newWay, {withFileTypes: true});
+            return newWay
+        }
         const distPath = join(dirname, way);
-        const files = await readdir(distPath, {withFileTypes: true});
+        await readdir(distPath, {withFileTypes: true});
 
         return distPath
     } catch (error) {
