@@ -10,6 +10,7 @@ import {calculateHash} from './controllers/hash/calchash.js';
 import {createFile} from './controllers/fs/createFile.js';
 import {readFile} from './controllers/fs/readFile.js';
 import {deleteFile} from './controllers/fs/deleteFile.js';
+import {reNameFile} from './controllers/fs/reNameFile.js';
 
 let __dirname = homedir();
 const rl = readline.createInterface({ input, output });
@@ -33,7 +34,7 @@ rl.on('line', async (input)=>{
     }else if(input.length>4 && input.startsWith('add ')){
         createFile(__dirname, input);
     }else if(input.length>3 && input.startsWith('rn ')){
-        
+        await reNameFile(__dirname, input);
     }else if(input.length>3 && input.startsWith('cp ')){
     
     }else if(input.length>3 && input.startsWith('mv ')){
