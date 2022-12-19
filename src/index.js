@@ -14,6 +14,8 @@ import {reNameFile} from './controllers/fs/reNameFile.js';
 import { copyFile } from './controllers/fs/copyFile.js';
 import { moveFile } from './controllers/fs/moveFile.js';
 import {helpFunc} from './controllers/cli/helpFunc.js'
+import {compressFile} from './controllers/zip/compressFile.js'
+import {decompressFile} from './controllers/zip/deCompressFile.js'
 
 let __dirname = homedir();
 const rl = readline.createInterface({ input, output });
@@ -84,11 +86,11 @@ rl.on('line', async (input)=>{
         console.log(`You are currently in ${__dirname}`);
 
     }else if(input.length>9 && input.startsWith('compress ')){
-
+        await compressFile(__dirname, input)
         console.log(`You are currently in ${__dirname}`);
 
     }else if(input.length>11 && input.startsWith('decompress ')){
-
+        await decompressFile(__dirname, input)
         console.log(`You are currently in ${__dirname}`);
 
     }else if(input === 'help'){
@@ -96,6 +98,7 @@ rl.on('line', async (input)=>{
         console.log(`You are currently in ${__dirname}`);
     }else{
         console.log('Invalid input\n');
+        console.log(`You are currently in ${__dirname}`);
     }
 })
 
