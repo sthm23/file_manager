@@ -12,16 +12,35 @@ export async function copyFile(dirname, text) {
   const path_to_new_directory = commandText[1];
 
   try {
-    if(checkFile(path_to_file) === false) {
+
+    const source = join(dirname, path_to_file);
+    const sourceDirectoryArr = source.split(`\\`);
+    const oldFileName = sourceDirectoryArr[sourceDirectoryArr.length-1];
+    if(await checkFile(source, 'file') === false) {
       console.log('Operation failed: written wrong file name!');
       return
     }
-    const source = join(dirname, path_to_file);
-    const dist_path = join(dirname, path_to_new_directory);
-    const fileNameToWrite = source.split(`\\`)
-
+    const dist_path = join(dirname, path_to_new_directory, oldFileName);
+    if(await checkFile(join(dirname, path_to_new_directory), 'directory') === false) {
+      console.log('Operation failed: written wrong directory name!');
+      return
+    }
+    let body = '';
     const readable = createReadStream(source);
     const writable = createWriteStream(dist_path);
+
+    readable.on('data', (chunk)=>{
+      body+=chunk.toString()
+    })
+    readable.on('error', ()=>{
+      console.log('Operation failed: error operation in read Stream!');
+    })
+
+    readable.on('end', ()=>{
+      writable.write(body);
+      console.log('successfully copied!');
+      
+    })
 
   } catch (error) {
     console.log('Operation failed: written wrong path to new directory!');
@@ -29,10 +48,10 @@ export async function copyFile(dirname, text) {
   }
 }
 
-async function checkFile(path) {
+async function checkFile(path, type) {
   try {
     const file = await stat(path);
-    return file.isFile()
+    return type === 'file' ? file.isFile() : file.isDirectory()
   } catch (error) {
     return false
   }

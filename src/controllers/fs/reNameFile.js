@@ -13,16 +13,19 @@ export async function reNameFile(dirname, text) {
   try {
     if(checkPath(path_to_file) === false) {
       console.log('Operation failed: written wrong file name!');
+      
       return
     }
     const source = join(dirname, path_to_file);
     const dist_path = join(dirname, new_filename)
     await rename(source, dist_path);
     console.log('successfully renamed!\n');
+    
     return
 
   } catch (error) {
     console.log('Operation failed: written wrong file name!');
+    
     return
   }
 }

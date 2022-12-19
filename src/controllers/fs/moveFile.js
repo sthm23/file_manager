@@ -1,4 +1,4 @@
-import {rename, stat} from 'node:fs/promises';
+import {rm, stat} from 'node:fs/promises';
 import { join } from 'node:path';
 
 export async function moveFile(dirname, text) {
@@ -8,21 +8,47 @@ export async function moveFile(dirname, text) {
     return
   }
   const path_to_file = commandText[0];
-  const new_filename = commandText[1];
+  const path_to_new_directory = commandText[1];
 
   try {
-    if(checkFile(path_to_file) === false) {
+
+    const source = join(dirname, path_to_file);
+    const sourceDirectoryArr = source.split(`\\`);
+    const oldFileName = sourceDirectoryArr[sourceDirectoryArr.length-1];
+    if(await checkFile(source, 'file') === false) {
       console.log('Operation failed: written wrong file name!');
       return
     }
-    const source = join(dirname, path_to_file);
-    const dist_path = join(dirname, new_filename)
-    await rename(source, dist_path);
-    console.log('successfully renamed!\n');
-    return
+    const dist_path = join(dirname, path_to_new_directory, oldFileName);
+    if(await checkFile(join(dirname, path_to_new_directory), 'directory') === false) {
+      console.log('Operation failed: written wrong directory name!');
+      return
+    }
+    let body = '';
+    const readable = createReadStream(source);
+    const writable = createWriteStream(dist_path);
+
+    readable.on('data', (chunk)=>{
+      body+=chunk.toString()
+    })
+    readable.on('error', ()=>{
+      console.log('Operation failed: error operation in read Stream!');
+    })
+
+    readable.on('end', async ()=>{
+      writable.write(body);
+      const result = await rm(source);
+      if(result === undefined) {
+        console.log('successfully moved!');
+        
+      }else{
+        
+      }
+    })
 
   } catch (error) {
-    console.log('Operation failed: written wrong file name!');
+    console.log('Operation failed: written wrong path to new directory!');
+    
     return
   }
 }
@@ -30,7 +56,7 @@ export async function moveFile(dirname, text) {
 async function checkFile(path) {
   try {
     const file = await stat(path);
-    return file.isFile()
+    return type === 'file' ? file.isFile() : file.isDirectory()
   } catch (error) {
     return false
   }

@@ -11,8 +11,10 @@ export function readFile(dirname, str) {
     });
     readable.on('error', ()=> {
         console.log('Operation failed: written wrong path_to_file');
+        
     });
     readable.on('end', ()=>{
         console.log(body);
+        
     })
 }
